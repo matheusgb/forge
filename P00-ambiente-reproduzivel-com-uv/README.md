@@ -56,7 +56,7 @@ uv sync --locked
 uv run ruff check .
 uv run pyright
 uv run pytest
-uv run p00 ForgeLab
+uv run p00 Forge
 ```
 
 `uv sync --locked` cria a `.venv`. O `uv run` executa cada ferramenta nesse ambiente,

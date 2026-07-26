@@ -1,4 +1,4 @@
-![Banner do ForgeLab](assets/forge-lab-banner.png)
+![Banner do Forge](assets/forge-banner.png)
 
 <p align="center">
   <img src="https://img.shields.io/badge/Python-3.14-3776AB?logo=python&logoColor=white" alt="Python 3.14">
@@ -10,7 +10,7 @@
 **Treze microprojetos independentes para observar fundamentos de backend funcionando,
 falhando e se recuperando.**
 
-O ForgeLab transforma decisões de backend em experimentos pequenos e reproduzíveis.
+O Forge transforma decisões de backend em experimentos pequenos e reproduzíveis.
 Os temas vão de concorrência e recuperação de falhas até proteção de dados e entrega
 de mensagens. Cada pasta responde a uma pergunta. O código mostra o mecanismo, os
 testes protegem a regra e a evidência registra o que realmente aconteceu.
@@ -189,8 +189,8 @@ experimento e nos testes.
 Clone o repositório:
 
 ```bash
-git clone https://github.com/matheusgb/forge-lab.git
-cd forge-lab
+git clone https://github.com/matheusgb/forge.git
+cd forge
 ```
 
 Entre no projeto desejado. Cada pasta possui seu próprio `pyproject.toml` e `uv.lock`:
@@ -215,7 +215,7 @@ docker compose down -v
 ```
 
 Consulte o [catálogo](#catálogo-dos-projetos) para abrir as instruções específicas. O
-ForgeLab não usa `Makefile` nem outro agrupador de tarefas. Os comandos reais continuam
+Forge não usa `Makefile` nem outro agrupador de tarefas. Os comandos reais continuam
 visíveis.
 
 ## Como explorar um projeto
@@ -265,7 +265,7 @@ para produção.
 
 ## Limites da coleção
 
-O ForgeLab comprova mecanismos em cenários pequenos e controlados. Ele não mede volume
+O Forge comprova mecanismos em cenários pequenos e controlados. Ele não mede volume
 de produção, disponibilidade distribuída, custo de nuvem, operação de clusters ou
 comportamento multi-região.
 
@@ -274,7 +274,7 @@ aberto para correções e manutenção do que já foi construído.
 
 ## Fim
 
-O ForgeLab reúne treze perguntas de backend e transforma cada uma em código pequeno,
+O Forge reúne treze perguntas de backend e transforma cada uma em código pequeno,
 falha controlada e evidência reproduzível. Escolha um problema no catálogo, entre na
 pasta e execute os comandos. O resultado mais útil não é decorar uma biblioteca. É
 enxergar onde uma decisão funciona, como ela falha e até onde a prova realmente vale.

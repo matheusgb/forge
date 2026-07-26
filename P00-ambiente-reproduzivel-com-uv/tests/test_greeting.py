@@ -4,7 +4,7 @@ from p00_ambiente_reproduzivel import greeting
 
 
 def test_greeting_normalizes_name() -> None:
-    assert greeting("  ForgeLab  ") == "Ambiente pronto, ForgeLab!"
+    assert greeting("  Forge  ") == "Ambiente pronto, Forge!"
 
 
 def test_greeting_rejects_empty_name() -> None:
