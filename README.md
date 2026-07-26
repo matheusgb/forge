@@ -1,4 +1,4 @@
-![Banner do Forge](assets/forge-banner.png)
+![Banner do Forge](assets/forge-banner.svg)
 
 <p align="center">
   <img src="https://img.shields.io/badge/Python-3.14-3776AB?logo=python&logoColor=white" alt="Python 3.14">
