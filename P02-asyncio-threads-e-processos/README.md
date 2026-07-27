@@ -5,8 +5,8 @@ CPU. Os dois grupos são medidos separadamente porque resolvem problemas diferen
 
 ## Como o programa funciona
 
-O primeiro experimento simula dez chamadas externas com 250 milissegundos de espera.
-Ele executa essas chamadas em sequência, com `asyncio.gather` e com uma função
+O primeiro experimento simula dez chamadas externas com 250 milissegundos de espera
+cada. Ele executa essas chamadas em sequência, com `asyncio.gather` e com uma função
 bloqueante dentro do código assíncrono.
 
 O segundo experimento executa quatro cálculos iguais. Ele compara execução direta,
@@ -27,23 +27,28 @@ as chamadas que demonstram espera concorrente, bloqueio, threads e processos.
 
 ## Conceito abordado
 
-Concorrência permite avançar mais de uma operação no mesmo intervalo. Ela ajuda quando
-o programa passa tempo esperando rede, disco ou banco. `asyncio` coordena essas esperas
-por meio do event loop.
+[Concorrência](https://pt.wikipedia.org/wiki/Concorr%C3%AAncia_(ci%C3%AAncia_da_computa%C3%A7%C3%A3o))
+é avançar mais de uma operação no mesmo intervalo. Ajuda quando o programa passa tempo
+esperando rede, disco ou banco. O
+[`asyncio`](https://docs.python.org/pt-br/3/library/asyncio.html) coordena essas
+esperas por meio de um event loop.
 
-Paralelismo executa cálculos ao mesmo tempo. No CPython tradicional, o GIL limita a
-execução simultânea de código Python em threads. Processos usam interpretadores
-separados e podem aproveitar vários núcleos, mas possuem custo de criação e comunicação.
+[Paralelismo](https://pt.wikipedia.org/wiki/Computa%C3%A7%C3%A3o_paralela) é executar
+cálculos ao mesmo tempo. No CPython tradicional, o
+GIL (Global Interpreter Lock) limita a execução
+simultânea de código Python em threads. Processos usam interpretadores separados e
+podem aproveitar vários núcleos, mas custam mais para criar e para trocar dados entre
+si.
 
 ## Para que isso serve em produção
 
-A escolha errada pode deixar uma API lenta mesmo quando há recursos disponíveis.
+A escolha errada deixa uma API lenta mesmo quando há recursos disponíveis.
 
-Exemplo: um endpoint consulta dez serviços independentes. Se ele esperar cada resposta
+Exemplo: um endpoint consulta dez serviços independentes. Se esperar cada resposta
 antes de iniciar a próxima, as latências se somam. Com chamadas HTTP assíncronas, ele
-pode iniciar todas e aguardar o conjunto. Se o endpoint também gerar um relatório com
-cálculo pesado, esse cálculo não deve rodar diretamente no event loop. Ele pode ir para
-um processo ou para um worker separado.
+inicia todas e aguarda o conjunto. Se esse endpoint também gerar um relatório com
+cálculo pesado, esse cálculo não deve rodar direto no event loop. Ele deve ir para um
+processo ou para um worker separado.
 
 ## Como executar
 
@@ -84,5 +89,5 @@ para outra carga ou ambiente.
 ## Resumo da ópera
 
 Use operações assíncronas quando o programa espera I/O. Não execute código bloqueante
-ou cálculo pesado no event loop. Threads podem preservar a capacidade de resposta.
-Processos podem paralelizar cálculo em Python quando o ganho compensa o custo.
+ou cálculo pesado no event loop. Threads preservam a capacidade de resposta. Processos
+paralelizam cálculo em Python quando o ganho compensa o custo.

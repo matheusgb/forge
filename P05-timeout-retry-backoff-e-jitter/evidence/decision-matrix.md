@@ -9,6 +9,9 @@
 | timeout | repetir dentro do limite | parar, operação insegura |
 | falha transitória na última tentativa | parar, limite esgotado | não chega a uma nova tentativa |
 
-A leitura usa `GET` e pode ser repetida sem criar um novo efeito. A criação usa `POST`
-e não recebe uma chave de idempotência neste laboratório. Por isso, um timeout pode
-esconder uma criação concluída no provedor e o cliente não repete a chamada.
+A leitura usa `GET`. Pode ser repetida sem criar um novo efeito.
+
+A criação usa `POST` e, neste laboratório, não recebe uma chave de idempotência.
+Por isso, um timeout na criação é tratado como erro: pode ser que o provedor já
+tenha concluído a operação, e repetir a chamada criaria um segundo efeito. Nesse
+caso o cliente para e não tenta de novo.

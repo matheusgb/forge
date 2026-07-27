@@ -20,24 +20,26 @@ PostgreSQL verifica FK, NOT NULL, CHECK e UNIQUE
 ```
 
 Alembic controla a versão do schema. O experimento executa `downgrade base`,
-`upgrade head`, testa as regras e repete o ciclo. Assim, a prova não depende de uma
+`upgrade head`, testa as regras e repete o ciclo. Assim a prova não depende de uma
 tabela montada manualmente.
 
 ## O conceito principal
 
-Uma constraint é uma regra que o banco verifica em toda escrita, independentemente de
-qual endpoint, worker ou script enviou o comando. Este projeto usa:
+Uma constraint é uma regra que o banco verifica em toda escrita, não importa qual
+endpoint, worker ou script enviou o comando. Este projeto usa quatro tipos:
 
-- `FOREIGN KEY` para impedir pedido ligado a um tenant inexistente;
-- `NOT NULL` para impedir um pedido sem identificador externo;
-- `CHECK` para impedir `total_cents` igual ou menor que zero;
-- `UNIQUE (tenant_id, external_id)` para impedir a mesma referência dentro do tenant.
+- `FOREIGN KEY` ([chave estrangeira](https://pt.wikipedia.org/wiki/Chave_estrangeira)):
+  impede um pedido ligado a um tenant inexistente;
+- `NOT NULL`: impede um pedido sem identificador externo;
+- `CHECK`: impede `total_cents` igual ou menor que zero;
+- `UNIQUE (tenant_id, external_id)`: impede a mesma referência dentro do mesmo tenant.
 
 A unicidade é composta. Dois tenants podem usar `checkout-42`, mas o mesmo tenant não
 pode gravar essa referência duas vezes.
 
-Migration é a alteração versionada do schema. O `upgrade` cria as tabelas e regras. O
-`downgrade` desfaz a revisão em ordem segura, primeiro `orders` e depois `tenants`.
+Uma migration é a alteração versionada do schema, aplicada e revertida por um
+histórico de revisões. O `upgrade` cria as tabelas e regras. O `downgrade` desfaz a
+revisão em ordem segura: primeiro `orders`, depois `tenants`.
 
 ## Para que isso serve em produção
 
@@ -97,7 +99,7 @@ docker compose down -v
 
 O cenário tenta inserir uma FK órfã, um valor nulo, um total impossível e uma referência
 duplicada. Cada tentativa abre sua própria transação. A rejeição aborta somente aquela
-escrita e permanece visível pelo tipo de erro devolvido pelo driver PostgreSQL.
+escrita e fica identificável pelo tipo de erro devolvido pelo driver PostgreSQL.
 
 ## Resultado observado
 
@@ -110,7 +112,7 @@ O resultado completo fica em `evidence/result.txt`.
 
 ## Limite do projeto
 
-O banco possui poucos registros e roda em um único container. O experimento não mede o
+O banco tem poucos registros e roda em um único container. O experimento não mede o
 tempo de lock de uma migration em tabela grande, concorrência durante deploy, estratégia
 de backfill nem compatibilidade entre versões da aplicação. Esses pontos exigem uma
 evolução `expand-and-contract` e carga representativa.

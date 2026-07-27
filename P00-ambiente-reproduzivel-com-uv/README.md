@@ -19,17 +19,17 @@ lint, verificação de tipos e testes.
           lint + tipos + testes
 ```
 
-O ambiente virtual pode ser apagado porque ele é apenas o resultado desses arquivos.
+A `.venv` pode ser apagada a qualquer momento, porque ela é só o resultado desses
+arquivos.
 
 ## Conceito abordado
 
-O conceito é a reprodutibilidade do ambiente. Um ambiente é reproduzível quando outra
-pessoa consegue instalar as mesmas versões e executar as mesmas verificações a partir
-dos arquivos versionados no Git.
+O conceito é reprodutibilidade de ambiente: outra pessoa consegue instalar as mesmas
+versões e rodar as mesmas verificações usando só os arquivos versionados no Git.
 
-O Typer representa uma dependência direta, pois a aplicação precisa dele para executar
-a CLI. Ruff, Pyright e pytest são dependências de desenvolvimento, pois eles verificam
-o projeto, mas não participam da execução da aplicação.
+O Typer é uma dependência direta, porque a aplicação precisa dele para rodar a CLI.
+Ruff, Pyright e pytest são dependências de desenvolvimento: verificam o projeto, mas
+não participam da execução da aplicação.
 
 | Arquivo | Função |
 | --- | --- |
@@ -40,14 +40,14 @@ o projeto, mas não participam da execução da aplicação.
 
 ## Para que isso serve em produção
 
-Uma equipe precisa executar o mesmo código em notebooks, integração contínua e
-containers. Versões diferentes podem mudar o comportamento do programa ou quebrar o
-deploy.
+Uma equipe precisa rodar o mesmo código em notebooks, integração contínua e
+containers. Versões diferentes de dependências podem mudar o comportamento do
+programa ou quebrar o deploy.
 
 Exemplo: uma biblioteca publica uma versão nova com uma mudança incompatível. Um
-projeto sem lock instala essa versão automaticamente e a pipeline começa a falhar. Com
-o `uv.lock`, todos continuam usando a versão validada até que a atualização seja feita
-de forma explícita.
+projeto sem lock instala essa versão automaticamente e a pipeline passa a falhar. Com
+o `uv.lock`, todos continuam na versão validada até alguém atualizar de forma
+explícita.
 
 ## Como executar
 
@@ -59,8 +59,8 @@ uv run pytest
 uv run p00 Forge
 ```
 
-`uv sync --locked` cria a `.venv`. O `uv run` executa cada ferramenta nesse ambiente,
-então não é necessário ativá-lo manualmente.
+`uv sync --locked` cria a `.venv`. O `uv run` executa cada ferramenta dentro desse
+ambiente, então não é preciso ativá-lo manualmente.
 
 Para apagar o ambiente e provar que ele pode ser reconstruído:
 
@@ -79,23 +79,23 @@ uv run pyright --project experiments/pyright-missing.json
 uv run pyright --project experiments/pyright-type.json
 ```
 
-O experimento apresenta uma dependência ausente e uma atribuição de texto onde o código
-espera um número. Cada comando deve terminar com falha e apontar, respectivamente,
-`reportMissingImports` e `reportAssignmentType`. Os comandos ficam visíveis porque a
-falha do verificador é o próprio objeto deste experimento.
+O experimento contém uma dependência ausente e uma atribuição de texto onde o código
+espera um número. Cada comando deve falhar e apontar, respectivamente,
+`reportMissingImports` e `reportAssignmentType`. A falha do verificador é o próprio
+objetivo deste experimento.
 
 ## Resultado observado
 
-No ambiente registrado em `evidence/environment.txt`, o projeto usou Python 3.14.6,
-uv 0.11.29 e pyenv 2.8.1. A recriação da `.venv` passou pelo Ruff, pelo Pyright e por
-dois testes. O Pyright também detectou as duas falhas controladas.
+No ambiente registrado em `evidence/environment.txt`: Python 3.14.6, uv 0.11.29,
+pyenv 2.8.1. A recriação da `.venv` passou pelo Ruff, pelo Pyright e por dois testes.
+O Pyright também detectou as duas falhas controladas, como esperado.
 
 ## Limite do projeto
 
-O teste cobre apenas o ambiente local. Ele não comprova compatibilidade com outros
-sistemas operacionais, várias versões do Python ou publicação de pacotes.
+O teste cobre só o ambiente local. Ele não comprova compatibilidade com outros
+sistemas operacionais, outras versões do Python, nem publicação de pacotes.
 
-## Resumo da ópera
+## Resumo
 
 Os arquivos versionados definem o ambiente. A `.venv` é descartável. Em um projeto
 real, essa separação reduz diferenças entre desenvolvimento, testes e deploy.

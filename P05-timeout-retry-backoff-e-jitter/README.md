@@ -34,9 +34,9 @@ Retry é a repetição controlada de uma operação após uma falha. Backoff exp
 aumenta o intervalo entre as tentativas. Jitter adiciona variação para evitar que muitos
 clientes repitam ao mesmo tempo.
 
-Idempotência significa que repetir uma operação produz o mesmo efeito lógico. Uma
-leitura costuma ser idempotente. Criar um pagamento sem uma chave de idempotência pode
-gerar duas cobranças.
+[Idempotência](https://pt.wikipedia.org/wiki/Idempotência) significa que repetir uma
+operação produz o mesmo efeito lógico. Uma leitura costuma ser idempotente. Criar um
+pagamento sem uma chave de idempotência pode gerar duas cobranças.
 
 ## Para que isso serve em produção
 

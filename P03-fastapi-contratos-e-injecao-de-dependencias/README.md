@@ -32,12 +32,18 @@ não altera o estado.
 
 ## Conceito abordado
 
-O projeto aborda contrato HTTP e injeção de dependência. O contrato define os campos
-aceitos, as respostas e os erros. O FastAPI publica esse contrato em OpenAPI.
+O projeto aborda contrato HTTP e injeção de dependência.
 
-Injeção de dependência significa entregar ao código os recursos de que ele precisa. O
-`Depends` fornece identidade, contexto da requisição e repositório. A regra de negócio
-recebe objetos Python comuns e não depende de `Request` ou `Response`.
+O contrato define os campos aceitos, as respostas e os erros. O FastAPI publica esse
+contrato em OpenAPI, um formato padrão que descreve uma API HTTP
+(OpenAPI).
+
+[Injeção de dependência](https://pt.wikipedia.org/wiki/Inje%C3%A7%C3%A3o_de_depend%C3%AAncia)
+significa entregar ao código os recursos de que ele precisa, em vez de o código criar
+esses recursos sozinho. No FastAPI isso é feito com `Depends`
+([documentação](https://fastapi.tiangolo.com/pt/tutorial/dependencies/)), que fornece
+identidade, contexto da requisição e repositório. A regra de negócio recebe objetos
+Python comuns e não depende de `Request` ou `Response`.
 
 ## Para que isso serve em produção
 

@@ -21,12 +21,15 @@ eventos gravados. O registro contém `job_started`, mas não contém `job_comple
 
 ## Conceito abordado
 
-O event loop coordena as operações assíncronas. Uma função bloqueante, como
+O [event loop](https://pt.wikipedia.org/wiki/Laço_de_eventos) é a construção que
+espera e despacha eventos assíncronos em um programa. Uma função bloqueante, como
 `time.sleep`, impede que ele avance quando é chamada diretamente dentro de `async def`.
 Uma rota `def` é executada pelo FastAPI em um thread pool e não ocupa o event loop.
 
-`BackgroundTasks` executa o job depois da resposta, mas dentro do mesmo processo da
-API. Se o processo morrer, o job também morre. O lifespan, por sua vez, controla a
+[`BackgroundTasks`](https://fastapi.tiangolo.com/pt/tutorial/background-tasks/) executa
+o job depois da resposta, mas dentro do mesmo processo da API. Se o processo morrer, o
+job também morre. O
+[lifespan](https://fastapi.tiangolo.com/pt/advanced/events/), por sua vez, controla a
 abertura e o fechamento de recursos no startup e no shutdown.
 
 ## Para que isso serve em produção

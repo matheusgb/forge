@@ -6,9 +6,10 @@ ordem, progresso e recuperação.
 
 ## Como o programa funciona
 
-Um broker é um serviço que recebe mensagens e as entrega a outros programas. O
-experimento sobe dois brokers: um Redpanda, compatível com o protocolo Kafka, e um
-RabbitMQ. O script publica os mesmos seis eventos de pedidos nos dois lados.
+Um broker de mensagens é um serviço que
+recebe mensagens e as entrega a outros programas. O experimento sobe dois brokers: um
+Redpanda, compatível com o protocolo Kafka, e um RabbitMQ. O script publica os mesmos
+seis eventos de pedidos nos dois lados.
 
 ```text
 eventos de pedidos
@@ -20,8 +21,9 @@ eventos de pedidos
 
 ### Kafka passo a passo
 
-O Kafka funciona como uma linha do tempo. Ler um evento não o remove. Cada grupo de
-consumidores mantém seu próprio marcador de leitura.
+O [Apache Kafka](https://pt.wikipedia.org/wiki/Apache_Kafka) funciona como uma linha do
+tempo. Ler um evento não o remove. Cada grupo de consumidores mantém seu próprio
+marcador de leitura.
 
 ```text
 1. A aplicação publica um evento com a chave do pedido.
@@ -73,8 +75,9 @@ ficar em partições diferentes. O Kafka não promete uma ordem única entre tod
 
 ### RabbitMQ passo a passo
 
-O RabbitMQ funciona como uma fila de tarefas. A mensagem continua pendente até o
-worker, programa que executa a tarefa, confirmar o sucesso.
+O [RabbitMQ](https://pt.wikipedia.org/wiki/RabbitMQ) funciona como uma fila de tarefas.
+A mensagem continua pendente até o worker, programa que executa a tarefa, confirmar o
+sucesso.
 
 ```text
 1. A aplicação publica uma mensagem na exchange.
@@ -203,7 +206,7 @@ universal. O Redpanda é usado pela compatibilidade com o protocolo Kafka, não 
 comparação de produtos. A observação de prefetch usa um único consumer e não mede
 backpressure sob carga.
 
-## Resumo da ópera
+## Resumo
 
 Kafka registra eventos e cada grupo controla sua posição. RabbitMQ entrega trabalho e
 espera confirmação. Escolher entre eles começa pelo modelo de entrega, não pelo nome da

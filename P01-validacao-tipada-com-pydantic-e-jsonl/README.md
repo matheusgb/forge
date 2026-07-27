@@ -31,14 +31,16 @@ perda silenciosa.
 
 ## Conceito abordado
 
-O projeto aborda modelagem tipada e tratamento explícito de erros. O Pydantic converte
-o JSON em um `Order` e concentra as regras dos campos no próprio modelo. O fluxo não
-precisa repetir verificações de tipo para cada valor recebido.
+O projeto aborda modelagem tipada e tratamento explícito de erros. O
+[Pydantic](https://docs.pydantic.dev/) converte o JSON em um `Order` e concentra as
+regras dos campos no próprio modelo, então o fluxo não precisa repetir verificações de
+tipo para cada valor recebido.
 
 Quando o Pydantic rejeita uma linha, o normalizador traduz o diagnóstico para uma única
 exceção de domínio com código, campo e número da linha. O laço captura essa exceção,
-grava a rejeição e continua. Uma falha de escrita usa outra exceção e encerra o lote.
-Um `set` detecta IDs repetidos e um `Counter` acumula os motivos das rejeições.
+grava a rejeição e segue para a próxima. Uma falha de escrita usa outra exceção e
+encerra o lote. Um `set` detecta IDs repetidos e um `Counter` acumula os motivos das
+rejeições.
 
 ## Para que isso serve em produção
 

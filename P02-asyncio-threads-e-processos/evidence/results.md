@@ -22,12 +22,14 @@
 - As três estratégias de I/O devolveram os mesmos dez resultados.
 - As três estratégias de CPU devolveram os mesmos quatro resultados.
 - `asyncio.gather` coordenou as esperas sem bloquear o sinal periódico.
-- `time.sleep` dentro da coroutine impediu o event loop de responder por quase todo
-  o tempo da execução.
-- Threads permitiram que o event loop atendesse outras tarefas com mais frequência,
-  mas não aceleraram estes cálculos em Python.
-- Os processos tiveram a menor mediana neste hardware. A primeira execução demorou
-  0,93 s, acima da mediana de 0,79 s, porque também incluiu o tempo
-  necessário para criar os processos.
+- `time.sleep` dentro da coroutine travou o event loop: ele ficou sem responder
+  por quase todo o tempo da execução.
+- Threads deixaram o event loop atender outras tarefas com mais frequência, mas
+  não aceleraram os cálculos. Isso é esperado: o GIL do Python impede que
+  threads rodem código Python em paralelo, então elas ajudam em I/O, não em
+  CPU.
+- Os processos tiveram a menor mediana neste hardware. A primeira execução
+  demorou 0,93 s, acima da mediana de 0,79 s, porque incluiu também o tempo de
+  criar os processos.
 
-Estes valores são resultado de laboratório, não uma previsão de produção.
+Estes valores são de laboratório, não uma previsão de comportamento em produção.

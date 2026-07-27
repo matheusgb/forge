@@ -55,17 +55,17 @@ argumento `true` limita o novo tenant à transação atual. Commit ou rollback r
 valor. Uma consulta posterior sem tenant continua sem filtro na aplicação, mas a RLS
 retorna zero linhas.
 
-O código usa `psycopg_pool.ConnectionPool` para administrar a conexão e transações do
-Psycopg 3 para delimitar o contexto. O mecanismo importante permanece explícito nas
-duas chamadas a `set_config`.
+O código usa `psycopg_pool.ConnectionPool` para administrar a conexão. As transações do
+Psycopg 3 delimitam o contexto. O mecanismo importante permanece explícito nas duas
+chamadas a `set_config`.
 
 ## Por que a role importa
 
-RLS significa segurança em nível de linha. Ela aplica uma política a cada linha antes
-de a role acessar o resultado. A role `tenant_app` é criada sem `SUPERUSER` e sem
-`BYPASSRLS`. A tabela também usa `FORCE ROW LEVEL SECURITY`.
+RLS (row-level security) aplica uma política a cada
+linha antes de a role acessar o resultado. A role `tenant_app` é criada sem
+`SUPERUSER` e sem `BYPASSRLS`. A tabela também usa `FORCE ROW LEVEL SECURITY`.
 
-Isso evita uma prova enganosa. Uma role privilegiada poderia ignorar a política mesmo
+Isso evita uma prova enganosa: uma role privilegiada poderia ignorar a política mesmo
 com o SQL correto.
 
 ## Para que isso serve em produção
@@ -153,7 +153,7 @@ Uma aplicação real também precisa impedir que entrada externa escolha livreme
 tenant, revisar privilégios de migrations e testar toda nova tabela multi-tenant. A
 transação curta usada para limpar legado também tem custo que este cenário não mede.
 
-## Resumo da ópera
+## Resumo
 
 Não coloque o tenant no escopo permanente de uma conexão que volta ao pool. Abra uma
 transação, use `SET LOCAL` e deixe a RLS negar consultas sem contexto. A role da

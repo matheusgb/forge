@@ -25,17 +25,19 @@ O cursor é opaco para o cliente. Neste provider, ele representa duas posições
 - o último ID entregue na página anterior.
 
 Essa combinação mantém uma janela estável. Um comentário criado depois do início não
-entra no meio da leitura. Ele aparece quando o cliente inicia uma nova consulta.
+entra no meio da leitura. Ele aparece só quando o cliente inicia uma nova consulta.
 
-Pydantic transforma cada resposta em `Page` e valida o contrato declarativo. O cliente
-fica responsável apenas pelo percurso do cursor e pelas invariantes da paginação.
+[Pydantic](https://docs.pydantic.dev/latest/) transforma cada resposta em `Page` e
+valida o contrato declarativo. O cliente fica responsável apenas pelo percurso do
+cursor e pelas invariantes da paginação.
 
 O cliente também interrompe cursor repetido, item duplicado, página vazia com continuação
 e resposta que não respeita o schema esperado.
 
 ## Solução usada no projeto
 
-O projeto substitui `OFFSET` por paginação por cursor. O cursor carrega dois valores:
+O projeto substitui `OFFSET` por [paginação por cursor](https://pt.wikipedia.org/wiki/Pagina%C3%A7%C3%A3o).
+O cursor carrega dois valores:
 
 ```text
 snapshot_id = maior ID quando a leitura começou
@@ -56,14 +58,10 @@ Neste caso, a regra vira `id <= 6 e id < 5`. A segunda página começa em 4. O c
 atual porque é maior que `snapshot_id`.
 
 Uma nova leitura começa sem cursor, cria `snapshot_id=7` e passa a enxergar o comentário
-novo. Portanto, a solução implementada é keyset pagination pelo último ID, combinada
-com uma fronteira de snapshot.
+novo. A solução implementada é keyset pagination pelo último ID, combinada com uma
+fronteira de snapshot (também chamada de high-water mark).
 
-## Conceitos abordados
-
-Paginação divide uma coleção em respostas menores. Paginação por cursor usa a posição
-do último item como continuação. Quando o cursor também carrega um limite do início da
-leitura, ele funciona como uma fronteira de snapshot, também chamada de high-water mark.
+## Evolução compatível do contrato
 
 Evolução compatível acrescenta informação sem invalidar consumidores existentes. A
 versão 2 do provider adiciona `author_badge`, um campo opcional que o consumidor da
@@ -75,14 +73,14 @@ compatibilidade não depende de um parser manual.
 
 Uma lista atualizada durante a leitura mistura dois problemas reais.
 
-O primeiro é visual. Inserir conteúdo acima do que a pessoa está lendo pode mover o
-viewport, a área visível da página. Esse comportamento costuma ser chamado de content
-jump ou layout shift. A técnica para manter o mesmo elemento na mesma posição é scroll
-anchoring, também chamada de preservação da posição de rolagem.
+O primeiro é visual: inserir conteúdo acima do que a pessoa está lendo pode mover o
+viewport, a área visível da página. Esse efeito costuma ser chamado de content jump ou
+layout shift. A técnica para manter o mesmo elemento na mesma posição é scroll
+anchoring, a preservação da posição de rolagem.
 
 O segundo problema está nos dados. Se a API usa `OFFSET`, uma inserção no topo desloca
-as posições. A página seguinte pode repetir ou omitir itens. Esse efeito é conhecido
-como pagination drift. Cursor estável ou keyset pagination evita depender da posição
+as posições e a página seguinte pode repetir ou omitir itens. Esse efeito é conhecido
+como pagination drift. Cursor estável (keyset pagination) evita depender da posição
 numérica que mudou.
 
 ## Para que isso serve em produção
@@ -91,7 +89,7 @@ Em uma seção de comentários ao vivo, o sistema pode receber novidades por pol
 WebSocket ou Server-Sent Events. A solução normalmente combina duas decisões:
 
 1. A API pagina comentários antigos com cursor e uma fronteira de snapshot.
-2. O frontend guarda comentários novos em um buffer e mostra “3 novos comentários”.
+2. O frontend guarda comentários novos em um buffer e mostra "3 novos comentários".
 3. Quando a pessoa decide exibi-los, o frontend mantém um item visível como âncora ou
    compensa a diferença de altura no `scrollTop`.
 
@@ -100,8 +98,8 @@ propriedade CSS `overflow-anchor`. Interfaces com listas virtuais ou atualizaç�
 complexas ainda costumam preservar explicitamente o ID e a posição do item visível.
 
 Se a tela não precisa ser atualizada ao vivo, buscar apenas no carregamento é uma
-solução válida. Ela troca atualização imediata por estabilidade. Os mecanismos acima
-se tornam necessários quando o produto precisa receber novidades durante a leitura.
+solução válida: ela troca atualização imediata por estabilidade. Os mecanismos acima
+só se tornam necessários quando o produto precisa receber novidades durante a leitura.
 
 ## Exemplo reproduzido
 
@@ -153,7 +151,7 @@ O provider é local e usa IDs crescentes como ordem. O projeto não implementa H
 banco, assinatura do cursor, exclusão concorrente ou frontend. O cursor demonstra o
 contrato e a estabilidade da janela. Índices e paginação de banco entram no P11.
 
-## Resumo da ópera
+## Resumo
 
 Scroll anchoring mantém a leitura no mesmo lugar. Cursor com snapshot evita que
 inserções mudem as páginas já iniciadas. Em feeds ao vivo, o frontend ainda pode

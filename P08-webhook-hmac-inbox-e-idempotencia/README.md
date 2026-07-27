@@ -55,23 +55,25 @@ corpo, a API retorna `409 Conflict` para não esconder uma inconsistência.
 
 ## Conceitos abordados
 
-HMAC é um código de autenticação calculado com uma função de hash e um segredo
-compartilhado. Ele permite detectar alteração do corpo e confirmar que o remetente
-conhece o segredo. Ele não criptografa a mensagem.
+[HMAC](https://pt.wikipedia.org/wiki/HMAC) é um código de autenticação de mensagem
+calculado com uma função de hash e um segredo compartilhado: detecta alteração do corpo
+e confirma que o remetente conhece o segredo, mas não criptografa a mensagem.
 
-A janela de timestamp reduz replay, que é o reenvio posterior de uma requisição válida.
-Ela não substitui a unicidade do `event_id`: uma duplicata ainda pode chegar dentro dos
-cinco minutos.
+A janela de timestamp reduz replay, o
+reenvio posterior de uma requisição válida. Ela não substitui a unicidade do `event_id`:
+uma duplicata ainda pode chegar dentro dos cinco minutos.
 
-Idempotência significa que repetir a mesma operação mantém um único efeito lógico. A
-inbox deduplica a entrega. O effect store também registra os IDs aplicados para que uma
-recuperação depois do efeito não o execute novamente.
+[Idempotência](https://pt.wikipedia.org/wiki/Idempot%C3%AAncia) significa que repetir a
+mesma operação mantém um único efeito lógico. A inbox deduplica a entrega. O effect store
+também registra os IDs aplicados para que uma recuperação depois do efeito não o execute
+novamente.
 
 ## Para que isso serve em produção
 
 Providers reenviam webhooks quando não recebem resposta, quando ocorre timeout ou quando
-o mecanismo de entrega trabalha no modelo at-least-once. Nesse modelo, a entrega pode
-acontecer mais de uma vez.
+o mecanismo de entrega segue o modelo
+at-least-once, no qual
+a entrega pode acontecer mais de uma vez.
 
 Exemplo: um sistema de pagamento envia `payment.authorized`. A API salva o evento e cai
 antes de o worker processá-lo. Depois da recuperação, o registro continua pendente e o
@@ -140,7 +142,7 @@ worker, mas não prova sobrevivência a um processo ou máquina reiniciados. Ban
 concorrência entre workers, rotação de segredo e proteção após comprometimento do
 segredo ficam fora do escopo.
 
-## Resumo da ópera
+## Resumo
 
 Valide a assinatura sobre o corpo bruto, limite a idade da requisição e salve um
 `event_id` único antes de responder. Execute o efeito fora da requisição e mantenha o
