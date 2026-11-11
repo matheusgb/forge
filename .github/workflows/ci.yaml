@@ -1,0 +1,71 @@
+name: ci
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+permissions:
+  contents: read
+
+jobs:
+  unitarios:
+    name: ${{ matrix.projeto }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        projeto:
+          - P00-ambiente-reproduzivel-com-uv
+          - P01-validacao-tipada-com-pydantic-e-jsonl
+          - P02-asyncio-threads-e-processos
+          - P03-fastapi-contratos-e-injecao-de-dependencias
+          - P04-lifespan-middleware-e-background-tasks
+          - P05-timeout-retry-backoff-e-jitter
+          - P06-circuit-breaker-e-token-bucket
+          - P07-paginacao-por-cursor
+          - P08-webhook-hmac-inbox-e-idempotencia
+    defaults:
+      run:
+        working-directory: ${{ matrix.projeto }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+      - run: uv sync --locked
+      - run: uv run ruff check .
+      - run: uv run pyright
+      - run: uv run pytest -q
+
+  integracao:
+    name: ${{ matrix.projeto }} (com serviços)
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        projeto:
+          - P09-postgresql-constraints-e-migrations
+          - P10-explain-analyze-e-indices
+          - P11-postgresql-rls-e-connection-pool
+          - P12-kafka-versus-rabbitmq
+    env:
+      # Cada teste de integração lê só a variável do seu projeto (P09, P10, P12);
+      # o P11 usa DSN fixa no conftest e ignora todas.
+      DATABASE_URL: postgresql+psycopg://forge:forge@127.0.0.1:55439/schema_guard
+      P10_RUN_INTEGRATION: "1"
+      RUN_BROKER_TESTS: "1"
+    defaults:
+      run:
+        working-directory: ${{ matrix.projeto }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+      - run: uv sync --locked
+      - run: uv run ruff check .
+      - run: uv run pyright
+      - run: docker compose up -d --wait
+      - run: uv run pytest -q
+      - if: failure()
+        run: docker compose logs --no-color --tail=50
+      - if: always()
+        run: docker compose down -v
