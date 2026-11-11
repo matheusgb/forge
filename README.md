@@ -5,6 +5,9 @@
   <img src="https://img.shields.io/badge/projetos-13-6f42c1" alt="13 projetos">
   <img src="https://img.shields.io/badge/status-conclu%C3%ADdo-2ea44f" alt="Status concluído">
   <img src="https://img.shields.io/badge/depend%C3%AAncias-uv-DE5FE9?logo=uv" alt="Dependências gerenciadas com uv">
+  <a href="https://github.com/matheusgb/forge/actions/workflows/ci.yaml">
+    <img src="https://github.com/matheusgb/forge/actions/workflows/ci.yaml/badge.svg" alt="CI">
+  </a>
 </p>
 
 Cada projeto isola uma decisão real de arquitetura de serviços e prova a resposta
